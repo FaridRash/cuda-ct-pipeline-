@@ -17,13 +17,13 @@ The pipeline covers the full preprocessing workflow needed before any downstream
 
 - **CUDA 12.4** — parallel kernel execution on the GPU
 - **C++17** — host-side logic and pipeline orchestration
-- **OpenCV** — image I/O, visualization, and CPU-side utilities
+- **OpenCV 4.5.4** — image I/O, visualization, and CPU-side utilities
 - **CMake** — build system
 - **Docker** — reproducible dev environment (Ubuntu 22.04 + CUDA 12.4)
 
 ## Hardware
 
-Developed and tested on an NVIDIA Quadro P2000 (Pascal, SM 6.1, 5GB VRAM).
+Developed and tested on an NVIDIA Quadro P2000 (Pascal, SM 6.1, 4GB VRAM).
 Requires any CUDA-capable GPU with compute capability 6.0+.
 
 ## Project structure
@@ -31,14 +31,15 @@ Requires any CUDA-capable GPU with compute capability 6.0+.
 ```
 cuda-ct-pipeline/
 ├── src/
-│   ├── kernels/        # CUDA kernel implementations (.cu)
-│   ├── pipeline/       # C++ pipeline stages
-│   └── utils/          # I/O helpers, DICOM loading, visualization
+│   └── main.cu         # Entry point
 ├── include/            # Header files
 ├── data/               # Sample inputs (not tracked)
-├── tests/              # Unit and integration tests
+├── build/              # Compiled binaries (not tracked)
+├── .devcontainer/
+│   └── devcontainer.json
 ├── CMakeLists.txt
 ├── Dockerfile
+├── docker-compose.yml
 └── README.md
 ```
 
@@ -57,17 +58,19 @@ cuda-ct-pipeline/
 git clone https://github.com/<your-username>/cuda-ct-pipeline.git
 cd cuda-ct-pipeline
 
-# Launch the dev container
-docker run --gpus all -it --rm \
-  -v $(pwd):/workspace \
-  nvcr.io/nvidia/cuda:12.4.1-devel-ubuntu22.04 bash
+# Build the dev image (first time only)
+docker build -t ct_hemorrhage:dev .
 
-# Inside the container
-cd /workspace
-mkdir build && cd build
-cmake ..
-make -j$(nproc)
+# Build the project
+docker compose run --rm dev bash -c "cmake -B build -S . && cmake --build build"
+
+# Run
+docker compose run --rm dev ./build/ct_hemorrhage
 ```
+
+### VS Code Dev Container
+
+Open the project in VS Code and run **"Dev Containers: Reopen in Container"** (`Ctrl+Shift+P`). This attaches VS Code directly into the container with full IntelliSense, CMake integration, and CUDA support.
 
 ## Dataset
 

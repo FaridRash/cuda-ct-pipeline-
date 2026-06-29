@@ -1,0 +1,15 @@
+{
+  "name": "ct_hemorrhage",
+  "dockerComposeFile": "../docker-compose.yml",
+  "service": "dev",
+  "workspaceFolder": "/workspace",
+  "extensions": [
+    "ms-vscode.cpptools",
+    "nvidia.nsight-vscode-edition",
+    "twxs.cmake",
+    "ms-vscode.cmake-tools"
+  ],
+  "remoteEnv": {
+    "NVIDIA_VISIBLE_DEVICES": "all"
+  }
+}

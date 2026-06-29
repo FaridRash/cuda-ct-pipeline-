@@ -1,0 +1,11 @@
+services:
+  dev:
+    image: ct_hemorrhage:dev
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+    volumes:
+      - .:/workspace
+    working_dir: /workspace
+    stdin_open: true
+    tty: true
